@@ -78,8 +78,11 @@ text_document_did_save <- function(self, params) {
         doc <- self$workspace$documents$get(uri)
         doc$set_content(doc$version, content)
     } else {
-        doc <- Document$new(uri, language = NULL, version = NULL, content = content)
-        self$workspace$documents$set(uri, doc)
+        # doc <- Document$new(uri, language = NULL, version = NULL, content = content)
+        # self$workspace$documents$set(uri, doc)
+        logger$error("uri not valid", uri)
+        return(NULL)
+        # ref: https://github.com/ocsmit/zed-r/issues/6#issuecomment-2578749445
     }
     doc$did_open()
     self$text_sync(uri, document = doc, run_lintr = TRUE, parse = TRUE)
