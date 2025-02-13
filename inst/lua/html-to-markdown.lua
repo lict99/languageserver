@@ -5,6 +5,14 @@ Conversion happens if the table cannot be represented by the GFM-syntax.
 Cells in the 1st column become headers and those in the 2nd column becomes
 content of the corresponding headers.
 --]]
+function Div(el)
+    return el.content
+end
+
+function Span(el)
+    return el.content
+end
+
 function Table(el)
   local tb = pandoc.utils.to_simple_table(el)
 
@@ -16,12 +24,12 @@ function Table(el)
   local function unlike_para(x)
     return x.t ~= "Plain" and x.t ~= "Para"
   end
-  local complex_table = false
-  for _, row in pairs(tb.rows) do
-    if (#row[1] ~= 1) or unlike_para(row[1][1]) then return end
-    complex_table = complex_table or #row[2] > 1 or unlike_para(row[2][1])
-  end
-  if not complex_table then return end
+  -- local complex_table = false
+  -- for _, row in pairs(tb.rows) do
+  --   if (#row[1] ~= 1) or unlike_para(row[1][1]) then return end
+  --   complex_table = complex_table or #row[2] > 1 or unlike_para(row[2][1])
+  -- end
+  -- if not complex_table then return end
 
   -- Conversion
   local header
@@ -29,7 +37,7 @@ function Table(el)
   for _, row in pairs(tb.rows) do
     header = row[1][1].content
     table.insert(header, pandoc.Str(':'))
-    table.insert(blocks, pandoc.Header(4, header))
+    table.insert(blocks, pandoc.Strong(header))
     for _, b in pairs(row[2]) do
       table.insert(blocks, b.t == "Plain" and pandoc.Para(b.content) or b)
     end
